@@ -1,5 +1,7 @@
 use std::collections::HashMap;
+
 use crate::models::list::List;
+use crate::errors::list_error::ListError;
 
 pub struct ListManager {
     lists: HashMap<u16, List>,
@@ -43,14 +45,19 @@ impl ListManager {
         matching_lists
     }
 
-    pub fn rename(&mut self, id: u16, new_name: &str) -> bool {
+    pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
+
+        if name.is_empty() {
+            return Err(ListError::EmptyName)
+        }
+
         match self.lists.get_mut(&id) {
             Some(list) => {
                 list.rename(name);
                 Ok(())
             }
-            None => false
+            None => Err(ListError::ListNotFound),
         }
     }
 }
