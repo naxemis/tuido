@@ -5,7 +5,7 @@ use crate::models::list::List;
 
 pub struct ListManager {
     lists: HashMap<u16, List>,
-    next_id: u16,
+    next_id: u32,
 }
 
 impl ListManager {
@@ -17,12 +17,12 @@ impl ListManager {
     }
 
     pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
-        if self.next_id > u16::MAX {
+        if self.next_id > u32::from(u16::MAX) {
             return Err(ListError::IdExhausted);
         }
 
         let list_name = name.trim().to_string();
-        let list_id = self.next_id;
+        let list_id = self.next_id as u16;
         let list = List::new(list_id, list_name);
         self.lists.insert(list_id, list);
         self.next_id += 1;
@@ -63,6 +63,12 @@ impl ListManager {
             }
             None => Err(ListError::ListNotFound),
         }
+    }
+}
+
+impl Default for ListManager {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
