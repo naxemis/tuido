@@ -25,4 +25,20 @@ impl ListManager {
     pub fn remove(&mut self, id: u16) -> Option<List> {
         self.lists.remove(&id)
     }
+
+    pub fn get_by_id(&self, id: u16) -> Option<&List> {
+        self.lists.get(&id)
+    }
+
+    pub fn get_by_name(&self, name: &str) -> Vec<&List> {
+        let mut matching_lists = Vec::new();
+
+        for list in self.lists.values() {
+            if list.get_name() == name {
+                matching_lists.push(list);
+            }
+        }
+
+        matching_lists
+    }
 }
