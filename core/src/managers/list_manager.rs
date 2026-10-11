@@ -41,4 +41,14 @@ impl ListManager {
 
         matching_lists
     }
+
+    pub fn rename(&mut self, id: u16, new_name: &str) -> bool {
+        match self.lists.get_mut(&id) {
+            Some(list) => {
+                list.rename(new_name);
+                true
+            }
+            None => false
+        }
+    }
 }
