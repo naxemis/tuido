@@ -44,10 +44,11 @@ impl ListManager {
     }
 
     pub fn rename(&mut self, id: u16, new_name: &str) -> bool {
+        let name = new_name.trim();
         match self.lists.get_mut(&id) {
             Some(list) => {
-                list.rename(new_name);
-                true
+                list.rename(name);
+                Ok(())
             }
             None => false
         }
