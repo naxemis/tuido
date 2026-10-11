@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use crate::models::list::List;
 use crate::errors::list_error::ListError;
+use crate::models::list::List;
 
 pub struct ListManager {
     lists: HashMap<u16, List>,
@@ -17,7 +17,9 @@ impl ListManager {
     }
 
     pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
-        if self.next_id > u16::MAX { return Err(ListError::IdExhausted); }
+        if self.next_id > u16::MAX {
+            return Err(ListError::IdExhausted);
+        }
 
         let list_name = name.trim().to_string();
         let list_id = self.next_id;
@@ -50,7 +52,9 @@ impl ListManager {
     pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
 
-        if name.is_empty() { return Err(ListError::EmptyName) }
+        if name.is_empty() {
+            return Err(ListError::EmptyName);
+        }
 
         match self.lists.get_mut(&id) {
             Some(list) => {
