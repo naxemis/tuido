@@ -39,3 +39,15 @@ impl Column {
         self.column_place = new_place;
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn rename_column() {
+        let mut column = Column::new(0, String::from("a"), 0, 0);
+        column.rename("b");
+        assert_eq!(column.get_name(), "b");
+    }
+}
