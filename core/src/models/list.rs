@@ -22,6 +22,20 @@ impl List {
 
     /// Replaces the list's name with `new_name`.
     pub(crate) fn rename(&mut self, new_name: &str) {
-        self.name = new_name.to_owned()
+        self.name = new_name.to_owned();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rename_list() {
+        let mut list = List::new(1, String::from("a"));
+        list.rename("b");
+        assert_eq!(list.get_name(), "b");
+    }
+}
+
+
