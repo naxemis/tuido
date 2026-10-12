@@ -72,14 +72,14 @@ impl ColumnManager {
         }
     }
 
-    pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<(u8), ColumnError> {
+    pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         let old_place = match self.get_by_id(id) {
             Some(column) => column.get_place(),
             None => return Err(ColumnError::ColumnNotFound),
         };
 
         if old_place == new_place {
-            return Ok((old_place));
+            return Ok(old_place);
         }
 
         if usize::from(new_place) >= self.columns.len() {
@@ -91,7 +91,7 @@ impl ColumnManager {
 
         for column in self.columns.values_mut() {
             if move_left {
-                if column.get_place() <= new_place && column.get_place() < old_place {
+                if column.get_place() >= new_place && column.get_place() < old_place {
                     column.change_place(column.get_place() + 1);
                 }
             } else if move_right
@@ -103,7 +103,7 @@ impl ColumnManager {
         let column = self.columns.get_mut(&id).unwrap();
         column.change_place(new_place);
 
-        Ok((new_place))
+        Ok(new_place)
     }
 }
 
@@ -121,21 +121,27 @@ mod tests {
     #[test]
     fn add() {
         let mut manager = ColumnManager::new();
+
         let result = manager.add("A");
+
         assert_eq!(result, Ok(0))
     }
 
     #[test]
     fn add_empty_name() {
         let mut manager = ColumnManager::new();
+
         let result = manager.add("   ");
+
         assert_eq!(result, Err(ColumnError::EmptyName));
     }
 
     #[test]
     fn get_by_id() {
         let mut manager = ColumnManager::new();
+
         let result = manager.add("A");
+
         assert!(manager.get_by_id(result.unwrap()).is_some());
     }
 
@@ -143,7 +149,9 @@ mod tests {
     fn get_by_name() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
+
         let result = manager.get_by_name("A");
+
         assert!(!result.is_empty())
     }
 
@@ -151,7 +159,9 @@ mod tests {
     fn remove() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
+
         let result = manager.remove(id);
+
         assert!(result.is_some());
         assert!(manager.get_by_id(id).is_none());
     }
@@ -159,7 +169,9 @@ mod tests {
     #[test]
     fn remove_missing() {
         let mut manager = ColumnManager::new();
+
         let result = manager.remove(0);
+
         assert!(result.is_none());
     }
 
@@ -168,7 +180,9 @@ mod tests {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
         manager.rename(id, "B").unwrap();
+
         let renamed_column = manager.get_by_id(id).unwrap();
+
         assert_eq!(renamed_column.get_name(), "B");
     }
 
@@ -176,7 +190,9 @@ mod tests {
     fn rename_missing() {
         let mut manager = ColumnManager::new();
         let id = 0;
+
         let result = manager.rename(id, "B");
+
         assert_eq!(manager.columns.len(), 0);
         assert_eq!(result, Err(ColumnError::ColumnNotFound));
     }
@@ -185,7 +201,9 @@ mod tests {
     fn rename_empty_name() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
+
         let result = manager.rename(id, "  ");
+
         assert_eq!(result, Err(ColumnError::EmptyName));
     }
 

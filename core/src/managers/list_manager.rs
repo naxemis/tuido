@@ -102,21 +102,27 @@ mod tests {
     #[test]
     fn add() {
         let mut manager = ListManager::new();
+
         let result = manager.add("A");
+
         assert_eq!(result, Ok(0));
     }
 
     #[test]
     fn add_empty_name() {
         let mut manager = ListManager::new();
+
         let result = manager.add("");
+
         assert_eq!(result, Err(ListError::EmptyName));
     }
 
     #[test]
     fn get_by_id() {
         let mut manager = ListManager::new();
+
         let result = manager.add("A");
+
         assert!(manager.get_by_id(result.unwrap()).is_some());
     }
 
@@ -124,7 +130,9 @@ mod tests {
     fn get_by_name() {
         let mut manager = ListManager::new();
         manager.add("A").unwrap();
+
         let result = manager.get_by_name("A");
+
         assert!(!result.is_empty());
     }
 
@@ -132,7 +140,9 @@ mod tests {
     fn remove() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
+
         let result = manager.remove(id);
+
         assert!(result.is_some());
         assert!(manager.get_by_id(id).is_none());
     }
@@ -140,7 +150,9 @@ mod tests {
     #[test]
     fn remove_missing() {
         let mut manager = ListManager::new();
+
         let result = manager.remove(0);
+
         assert!(result.is_none());
     }
 
@@ -149,15 +161,19 @@ mod tests {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
         manager.rename(id, "B").unwrap();
-        let renamed_list = manager.get_by_id(id).unwrap();
-        assert_eq!(renamed_list.get_name(), "B");
+
+        let result = manager.get_by_id(id).unwrap();
+
+        assert_eq!(result.get_name(), "B");
     }
 
     #[test]
     fn rename_missing() {
         let mut manager = ListManager::new();
         let id = 0;
+
         let result = manager.rename(id, "B");
+
         assert_eq!(manager.lists.len(), 0);
         assert_eq!(result, Err(ListError::ListNotFound));
     }
@@ -166,7 +182,9 @@ mod tests {
     fn rename_empty_name() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
+
         let result = manager.rename(id, "  ");
+
         assert_eq!(result, Err(ListError::EmptyName));
     }
 }

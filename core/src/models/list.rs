@@ -34,6 +34,7 @@ mod tests {
     fn rename_list() {
         let mut list = List::new(1, String::from("A"));
         list.rename("B");
+        
         assert_eq!(list.get_name(), "B");
     }
 }

@@ -42,6 +42,7 @@ mod test {
     fn rename_column() {
         let mut column = Column::new(0, String::from("A"), 0);
         column.rename("B");
+
         assert_eq!(column.get_name(), "B");
     }
 }
