@@ -96,4 +96,20 @@ mod tests {
         let result = manager.get_by_name("A");
         assert!(!result.is_empty())
     }
+
+    #[test]
+    fn remove_colum() {
+        let mut manager = ColumnManager::new();
+        let id = manager.add("A").unwrap();
+        let result = manager.remove(id);
+        assert!(result.is_some());
+        assert!(manager.get_by_id(id).is_none());
+    }
+
+    #[test]
+    fn remove_missing_column() {
+        let mut manager = ColumnManager::new();
+        let result = manager.remove(0);
+        assert!(result.is_none());
+    }
 }
