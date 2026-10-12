@@ -2,3 +2,4 @@
 
 pub mod column;
 pub mod list;
+pub mod card;
