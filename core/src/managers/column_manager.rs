@@ -128,4 +128,30 @@ mod tests {
         let result = manager.remove(0);
         assert!(result.is_none());
     }
+
+    #[test]
+    fn rename_column() {
+        let mut manager = ColumnManager::new();
+        let id = manager.add("A").unwrap();
+        manager.rename(id, "B").unwrap();
+        let renamed_column = manager.get_by_id(id).unwrap();
+        assert_eq!(renamed_column.get_name(), "B");
+    }
+
+    #[test]
+    fn rename_missing_column() {
+        let mut manager = ColumnManager::new();
+        let id = 0;
+        let result = manager.rename(id, "B");
+        assert_eq!(manager.columns.len(), 0);
+        assert_eq!(result, Err(ColumnError::ColumnNotFound));
+    }
+
+    #[test]
+    fn rename_with_empty_name() {
+        let mut manager = ColumnManager::new();
+        let id = manager.add("A").unwrap();
+        let result = manager.rename(id, "  ");
+        assert_eq!(result, Err(ColumnError::EmptyName));
+    }
 }

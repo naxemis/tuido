@@ -166,7 +166,7 @@ mod tests {
     fn rename_with_empty_name() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
-        let result = manager.rename(id, "");
+        let result = manager.rename(id, "  ");
         assert_eq!(result, Err(ListError::EmptyName));
     }
 }
