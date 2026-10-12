@@ -7,7 +7,7 @@ The project's core is under development, and the terminal interface has not been
 ## Features
 ### Minimal Viable Product:
 - [x] Creating, deleting, and renaming lists
-- [ ] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
+- [x] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
 - [ ] Creating, deleting, and renaming cards in lists
 - [ ] Moving cards between columns
 - [ ] Saving lists in separate JSON files after every change
@@ -54,18 +54,21 @@ cargo test --workspace -- --nocapture
 ```
 
 ## Development
-Before opening a pull request, make sure that formatting, test and Clippy checks pass.
+Before opening a pull request, make sure that formatting, tests and Clippy checks pass.
 
-To test it you can use:
-To run the check script through Bash:
-
+To test it locally, run:
 ```bash
 bash ./.github/scripts/check.sh
+```
+
+To automatically format the code and apply available Clippy fixes, run:
+```bash
+bash ./.github/scripts/fix.sh
 ```
 
 ## Contributing
 1. Create a feature branch.
 2. Implement the change and add or update tests.
-3. Run formatting, test and Clippy through the `check.sh` script.
+3. Run the `check.sh` script to verify formatting, tests, and Clippy checks.
 4. Update the documentation if the public behavior changes.
 5. Open a pull request describing the change and how it was tested.

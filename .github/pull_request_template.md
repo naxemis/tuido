@@ -5,7 +5,7 @@
 - Resolves # (for resolved issues - closes automatically)
 - Refs # (only reference/link to the topic, NO closing)
 
-If this section is N/A for the PR, remove the whole section.
+If this section is N/A for the PR, remove it.
 -->
 
 ## Description

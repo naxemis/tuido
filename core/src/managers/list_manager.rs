@@ -22,13 +22,17 @@ impl ListManager {
     ///
     /// Leading and trailing whitespace is removed from `name`.
     ///
-    /// Returns [`ListError::IdExhausted`] when no more list IDs are available.
+    /// Returns [`ListError::ListIdLimitReached`] when no more list IDs are available.
     pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
         if self.next_id > u32::from(u16::MAX) {
-            return Err(ListError::IdExhausted);
+            return Err(ListError::ListIdLimitReached);
         }
 
         let list_name = name.trim().to_string();
+        if list_name.is_empty() {
+            return Err(ListError::EmptyName);
+        }
+
         let list_id = self.next_id as u16;
         let list = List::new(list_id, list_name);
         self.lists.insert(list_id, list);
@@ -71,7 +75,6 @@ impl ListManager {
     /// [`ListError::ListNotFound`] if no list has the given ID.
     pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
-
         if name.is_empty() {
             return Err(ListError::EmptyName);
         }
@@ -97,66 +100,91 @@ mod tests {
     use super::*;
 
     #[test]
-    fn add_list() {
+    fn add() {
         let mut manager = ListManager::new();
-        let result = manager.add("Shopping");
+
+        let result = manager.add("A");
+
         assert_eq!(result, Ok(0));
+    }
+
+    #[test]
+    fn add_empty_name() {
+        let mut manager = ListManager::new();
+
+        let result = manager.add("");
+
+        assert_eq!(result, Err(ListError::EmptyName));
     }
 
     #[test]
     fn get_by_id() {
         let mut manager = ListManager::new();
-        let result = manager.add("Shopping");
+
+        let result = manager.add("A");
+
         assert!(manager.get_by_id(result.unwrap()).is_some());
     }
 
     #[test]
     fn get_by_name() {
         let mut manager = ListManager::new();
-        manager.add("Shopping").unwrap();
-        let result = manager.get_by_name("Shopping");
+        manager.add("A").unwrap();
+
+        let result = manager.get_by_name("A");
+
         assert!(!result.is_empty());
     }
 
     #[test]
-    fn remove_list() {
+    fn remove() {
         let mut manager = ListManager::new();
-        let id = manager.add("Shopping").unwrap();
+        let id = manager.add("A").unwrap();
+
         let result = manager.remove(id);
+
         assert!(result.is_some());
         assert!(manager.get_by_id(id).is_none());
     }
 
     #[test]
-    fn remove_missing_list() {
+    fn remove_missing() {
         let mut manager = ListManager::new();
+
         let result = manager.remove(0);
+
         assert!(result.is_none());
     }
 
     #[test]
-    fn rename_list() {
+    fn rename() {
         let mut manager = ListManager::new();
-        let id = manager.add("Shopping").unwrap();
-        manager.rename(id, "NotShopping").unwrap();
-        let renamed_list = manager.get_by_id(id).unwrap();
-        assert_eq!(renamed_list.get_name(), "NotShopping");
+        let id = manager.add("A").unwrap();
+        manager.rename(id, "B").unwrap();
+
+        let result = manager.get_by_id(id).unwrap();
+
+        assert_eq!(result.get_name(), "B");
     }
 
     #[test]
-    fn rename_missing_list() {
+    fn rename_missing() {
         let mut manager = ListManager::new();
         let id = 0;
-        let result = manager.rename(id, "NotShopping");
+
+        let result = manager.rename(id, "B");
+
         assert_eq!(manager.lists.len(), 0);
         assert_eq!(result, Err(ListError::ListNotFound));
     }
 
     #[test]
-    fn rename_with_empty_name() {
+    fn rename_empty_name() {
         let mut manager = ListManager::new();
-        let id = manager.add("Shopping").unwrap();
-        let result = manager.rename(id, "");
+        let id = manager.add("A").unwrap();
+
+        let result = manager.rename(id, "  ");
+
         assert_eq!(result, Err(ListError::EmptyName));
     }
 }
