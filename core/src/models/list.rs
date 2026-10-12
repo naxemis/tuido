@@ -21,7 +21,7 @@ impl List {
     }
 
     /// Replaces the list's name with `new_name`.
-    pub fn rename(&mut self, new_name: &str) {
+    pub(crate) fn rename(&mut self, new_name: &str) {
         self.name = new_name.to_owned()
     }
 }
