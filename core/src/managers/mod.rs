@@ -1,4 +1,4 @@
 //! Components responsible for managing application data.
 
-pub mod column_manager;
-pub mod list_manager;
+pub(crate) mod column_manager;
+pub(crate) mod list_manager;

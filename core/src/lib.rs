@@ -3,5 +3,5 @@
 //! This crate contains models, managers and errors used by the application.
 
 pub mod errors;
-pub mod managers;
+mod managers;
 pub mod models;
