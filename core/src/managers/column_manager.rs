@@ -188,4 +188,67 @@ mod tests {
         let result = manager.rename(id, "  ");
         assert_eq!(result, Err(ColumnError::EmptyName));
     }
+
+    #[test]
+    fn move_column_left() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+        manager.add("B").unwrap();
+        manager.add("C").unwrap();
+
+        let result = manager.move_column(2, 0).unwrap();
+
+        assert_eq!(manager.get_by_id(0).unwrap().get_place(), 1);
+        assert_eq!(manager.get_by_id(1).unwrap().get_place(), 2);
+        assert_eq!(result, 0);
+    }
+
+    #[test]
+    fn move_column_right() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+        manager.add("B").unwrap();
+        manager.add("C").unwrap();
+
+        let result = manager.move_column(0, 2).unwrap();
+
+        assert_eq!(result, 2);
+        assert_eq!(manager.get_by_id(1).unwrap().get_place(), 0);
+        assert_eq!(manager.get_by_id(2).unwrap().get_place(), 1);
+    }
+
+    #[test]
+    fn move_column_to_same_place() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+
+        let result = manager.move_column(0, 0);
+
+        assert_eq!(result, Ok(0));
+        assert_eq!(manager.get_by_id(0).unwrap().get_place(), 0);
+    }
+
+    #[test]
+    fn move_column_invalid_column() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+        manager.add("B").unwrap();
+        manager.add("C").unwrap();
+
+        let result = manager.move_column(10, 0);
+
+        assert_eq!(result, Err(ColumnError::ColumnNotFound));
+    }
+
+    #[test]
+    fn move_column_invalid_place() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+        manager.add("B").unwrap();
+        manager.add("C").unwrap();
+
+        let result = manager.move_column(0, 10);
+
+        assert_eq!(result, Err(ColumnError::InvalidColumnPlace));
+    }
 }
