@@ -51,7 +51,17 @@ impl ColumnManager {
     ///
     /// Returns the removed column, or `None` if no column has that ID.
     pub(crate) fn remove(&mut self, id: u8) -> Option<Column> {
-        self.columns.remove(&id)
+        let removed_column = self.columns.remove(&id)?;
+
+        let removed_column_place = removed_column.get_place();
+
+        for column in self.columns.values_mut() {
+            if column.get_place() > removed_column_place {
+                column.move_to(column.get_place() - 1);
+            }
+        }
+
+        Some(removed_column)
     }
 
     /// Finds a column by its ID.
