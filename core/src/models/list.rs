@@ -87,7 +87,7 @@ impl List {
     /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
     /// current range of column positions.
     pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
-        self.column_manager.move_column(id, new_place)
+        self.column_manager.move_to(id, new_place)
     }
 }
 
