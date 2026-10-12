@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 name: Validate Branch Flow
-=======
-name: Validate branch flow
->>>>>>> 58c204d (Initial commit)
-=======
-name: Validate Branch Flow
->>>>>>> a2a6d5a (chore(github): Rename branch flow workflow)
 
 on:
   pull_request:
@@ -14,15 +6,7 @@ on:
 
 jobs:
   validate-branch-flow:
-<<<<<<< HEAD
-<<<<<<< HEAD
     name: Validate Branch Flow
-=======
-    name: Validate branch flow
->>>>>>> 58c204d (Initial commit)
-=======
-    name: Validate Branch Flow
->>>>>>> a2a6d5a (chore(github): Rename branch flow workflow)
     runs-on: ubuntu-latest
 
     steps:
