@@ -2,3 +2,4 @@
 
 pub mod column_error;
 pub mod list_error;
+pub mod card_error;
