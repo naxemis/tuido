@@ -34,4 +34,4 @@ This helps reviewers see the testing phase was intentionally skipped.
 - [ ] Unit/integration tests have been written for the code (if required)
 - [ ] All test are passing
 - [ ] The commit history is clean and understandable
-- [ ] The documentation/README has been written or updated (if required)
+- [ ] The documentation or README has been written or updated (if required)
