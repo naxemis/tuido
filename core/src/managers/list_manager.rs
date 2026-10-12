@@ -3,12 +3,14 @@ use std::collections::HashMap;
 use crate::errors::list_error::ListError;
 use crate::models::list::List;
 
+/// Stores and manages the lists in the application.
 pub struct ListManager {
     lists: HashMap<u16, List>,
     next_id: u32,
 }
 
 impl ListManager {
+    /// Creates an empty list manager.
     pub fn new() -> Self {
         Self {
             lists: HashMap::new(),
@@ -16,6 +18,11 @@ impl ListManager {
         }
     }
 
+    /// Adds a list and returns its generated ID.
+    ///
+    /// Leading and trailing whitespace is removed from `name`.
+    ///
+    /// Returns [`ListError::IdExhausted`] when no more list IDs are available.
     pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
         if self.next_id > u32::from(u16::MAX) {
             return Err(ListError::IdExhausted);
@@ -29,14 +36,21 @@ impl ListManager {
         Ok(list_id)
     }
 
+    /// Removes the list with the given ID.
+    ///
+    /// Returns the removed list, or `None` if no list has that ID.
     pub fn remove(&mut self, id: u16) -> Option<List> {
         self.lists.remove(&id)
     }
 
+    /// Finds a list by its ID.
+    ///
+    /// Returns `None` if no list has the given ID.
     pub fn get_by_id(&self, id: u16) -> Option<&List> {
         self.lists.get(&id)
     }
 
+    /// Finds all lists whose names exactly match `name`.
     pub fn get_by_name(&self, name: &str) -> Vec<&List> {
         let mut matching_lists = Vec::new();
 
@@ -49,6 +63,12 @@ impl ListManager {
         matching_lists
     }
 
+    /// Renames the list with the given ID.
+    ///
+    /// Leading and trailing whitespace is removed from `new_name`.
+    ///
+    /// Returns [`ListError::EmptyName`] if the trimmed name is empty, or
+    /// [`ListError::ListNotFound`] if no list has the given ID.
     pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
 
