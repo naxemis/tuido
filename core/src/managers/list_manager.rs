@@ -75,7 +75,6 @@ impl ListManager {
     /// [`ListError::ListNotFound`] if no list has the given ID.
     pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
-
         if name.is_empty() {
             return Err(ListError::EmptyName);
         }

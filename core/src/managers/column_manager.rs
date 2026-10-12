@@ -55,6 +55,22 @@ impl ColumnManager {
 
         matching_columns
     }
+
+    pub fn rename(&mut self, id: u8, new_name: &str) -> Result<(), ColumnError> {
+        let name = new_name.trim();
+        if name.is_empty() {
+            return Err(ColumnError::EmptyName);
+        }
+
+        match self.columns.get_mut(&id) {
+            Some(column) => {
+                column.rename(name);
+                Ok(())
+            }
+            None => Err(ColumnError::ColumnNotFound),
+        }
+
+    }
 }
 
 impl Default for ColumnManager {
