@@ -52,4 +52,15 @@ mod tests {
         
         assert_eq!(list.get_name(), "B");
     }
+
+    #[test]
+    fn check_for_column_manager() {
+        let mut list = List::new(1, String::from("A"));
+
+        assert!(!list.get_column_manager().get_by_id(0).is_some());
+
+        let column_id = list.get_column_manager_mut().add("B").unwrap();
+
+        assert!(list.get_column_manager().get_by_id(column_id).is_some());
+    }
 }
