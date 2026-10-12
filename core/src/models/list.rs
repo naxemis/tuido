@@ -32,9 +32,9 @@ mod tests {
 
     #[test]
     fn rename_list() {
-        let mut list = List::new(1, String::from("a"));
-        list.rename("b");
-        assert_eq!(list.get_name(), "b");
+        let mut list = List::new(1, String::from("A"));
+        list.rename("B");
+        assert_eq!(list.get_name(), "B");
     }
 }
 
