@@ -100,14 +100,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn add_list() {
+    fn add() {
         let mut manager = ListManager::new();
         let result = manager.add("A");
         assert_eq!(result, Ok(0));
     }
 
     #[test]
-    fn add_list_empty_name() {
+    fn add_empty_name() {
         let mut manager = ListManager::new();
         let result = manager.add("");
         assert_eq!(result, Err(ListError::EmptyName));
@@ -129,7 +129,7 @@ mod tests {
     }
 
     #[test]
-    fn remove_list() {
+    fn remove() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
         let result = manager.remove(id);
@@ -138,14 +138,14 @@ mod tests {
     }
 
     #[test]
-    fn remove_missing_list() {
+    fn remove_missing() {
         let mut manager = ListManager::new();
         let result = manager.remove(0);
         assert!(result.is_none());
     }
 
     #[test]
-    fn rename_list() {
+    fn rename() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
         manager.rename(id, "B").unwrap();
@@ -154,7 +154,7 @@ mod tests {
     }
 
     #[test]
-    fn rename_missing_list() {
+    fn rename_missing() {
         let mut manager = ListManager::new();
         let id = 0;
         let result = manager.rename(id, "B");
@@ -163,7 +163,7 @@ mod tests {
     }
 
     #[test]
-    fn rename_with_empty_name() {
+    fn rename_empty_name() {
         let mut manager = ListManager::new();
         let id = manager.add("A").unwrap();
         let result = manager.rename(id, "  ");

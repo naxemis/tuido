@@ -85,14 +85,14 @@ mod tests {
     use crate::managers::column_manager::ColumnManager;
 
     #[test]
-    fn add_column() {
+    fn add() {
         let mut manager = ColumnManager::new();
         let result = manager.add("A");
         assert_eq!(result, Ok(0))
     }
 
     #[test]
-    fn add_column_empty_name() {
+    fn add_empty_name() {
         let mut manager = ColumnManager::new();
         let result = manager.add("   ");
         assert_eq!(result, Err(ColumnError::EmptyName));
@@ -114,7 +114,7 @@ mod tests {
     }
 
     #[test]
-    fn remove_colum() {
+    fn remove() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
         let result = manager.remove(id);
@@ -123,14 +123,14 @@ mod tests {
     }
 
     #[test]
-    fn remove_missing_column() {
+    fn remove_missing() {
         let mut manager = ColumnManager::new();
         let result = manager.remove(0);
         assert!(result.is_none());
     }
 
     #[test]
-    fn rename_column() {
+    fn rename() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
         manager.rename(id, "B").unwrap();
@@ -139,7 +139,7 @@ mod tests {
     }
 
     #[test]
-    fn rename_missing_column() {
+    fn rename_missing() {
         let mut manager = ColumnManager::new();
         let id = 0;
         let result = manager.rename(id, "B");
@@ -148,7 +148,7 @@ mod tests {
     }
 
     #[test]
-    fn rename_with_empty_name() {
+    fn rename_empty_name() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
         let result = manager.rename(id, "  ");
