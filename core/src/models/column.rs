@@ -1,4 +1,5 @@
 use crate::errors::card_error::CardError;
+use crate::errors::card_move_error::CardMoveError;
 use crate::managers::card_manager::CardManager;
 use crate::models::card::Card;
 
@@ -48,6 +49,10 @@ impl Column {
 
     pub fn add_card(&mut self, name: &str) -> Result<u16, CardError> {
         self.card_manager.add(name)
+    }
+
+    pub fn insert_card(&mut self, card: Card, target_place: u16) -> Result<u16, CardMoveError> {
+        self.card_manager.insert(card, target_place)
     }
 
     pub fn remove_card(&mut self, id: u16) -> Option<Card> {
