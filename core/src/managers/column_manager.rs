@@ -87,17 +87,18 @@ impl ColumnManager {
         }
 
         let move_left = new_place < old_place;
-        let move_right = new_place > old_place;
+        let _move_right = new_place > old_place;
 
         for column in self.columns.values_mut() {
             if move_left {
                 if column.get_place() >= new_place && column.get_place() < old_place {
                     column.change_place(column.get_place() + 1);
                 }
-            } else if move_right
-                && column.get_place() <= new_place && column.get_place() > old_place {
+            } else {
+                if column.get_place() <= new_place && column.get_place() > old_place {
                     column.change_place(column.get_place() - 1);
                 }
+            }
         }
 
         let column = self.columns.get_mut(&id).unwrap();
