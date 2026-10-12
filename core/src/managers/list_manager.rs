@@ -22,10 +22,10 @@ impl ListManager {
     ///
     /// Leading and trailing whitespace is removed from `name`.
     ///
-    /// Returns [`ListError::IdExhausted`] when no more list IDs are available.
+    /// Returns [`ListError::ListIdLimitReached`] when no more list IDs are available.
     pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
         if self.next_id > u32::from(u16::MAX) {
-            return Err(ListError::IdExhausted);
+            return Err(ListError::ListIdLimitReached);
         }
 
         let list_name = name.trim().to_string();
