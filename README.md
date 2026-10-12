@@ -7,7 +7,7 @@ The project's core is under development, and the terminal interface has not been
 ## Features
 ### Minimal Viable Product:
 - [x] Creating, deleting, and renaming lists
-- [ ] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
+- [x] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
 - [ ] Creating, deleting, and renaming cards in lists
 - [ ] Moving cards between columns
 - [ ] Saving lists in separate JSON files after every change
