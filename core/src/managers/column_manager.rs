@@ -71,6 +71,10 @@ impl ColumnManager {
         self.columns.get(&id)
     }
 
+    pub(crate) fn get_by_id_mut(&mut self, id: u8) -> Option<&mut Column> {
+        self.columns.get_mut(&id)
+    }
+
     /// Finds all columns whose names exactly match `name`.
     pub(crate) fn get_by_name(&self, name: &str) -> Vec<&Column> {
         let mut matching_columns = Vec::new();
