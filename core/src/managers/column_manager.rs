@@ -81,4 +81,19 @@ mod tests {
         let result = manager.add("   ");
         assert_eq!(result, Err(ColumnError::EmptyName));
     }
+
+    #[test]
+    fn get_by_id() {
+        let mut manager = ColumnManager::new();
+        let result = manager.add("A");
+        assert!(manager.get_by_id(result.unwrap()).is_some());
+    }
+
+    #[test]
+    fn get_by_name() {
+        let mut manager = ColumnManager::new();
+        manager.add("A").unwrap();
+        let result = manager.get_by_name("A");
+        assert!(!result.is_empty())
+    }
 }
