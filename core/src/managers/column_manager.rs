@@ -39,6 +39,22 @@ impl ColumnManager {
     pub fn remove(&mut self, id: u8) -> Option<Column> {
         self.columns.remove(&id)
     }
+
+    pub fn get_by_id(&self, id: u8) -> Option<&Column> {
+        self.columns.get(&id)
+    }
+
+    pub fn get_by_name(&self, name: &str) -> Vec<&Column> {
+        let mut matching_columns = Vec::new();
+
+        for column in self.columns.values() {
+            if column.get_name() == name {
+                matching_columns.push(column);
+            }
+        }
+
+        matching_columns
+    }
 }
 
 impl Default for ColumnManager {
