@@ -31,7 +31,7 @@ This helps reviewers see the testing phase was intentionally skipped.
 -->
 - [ ] The Pull Request title is clear, understandable, and consistent with project conventions (e.g., feat/fix)
 - [ ] The code complies with project standards and is formatted correctly
-- [ ] Unit/integration tests have been written for the code (if required)
+- [ ] Unit/integration tests have been written or updated for the code
 - [ ] All test are passing
 - [ ] The commit history is clean and understandable
-- [ ] The documentation or README has been written or updated (if required)
+- [ ] The documentation or README has been written or updated
