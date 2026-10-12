@@ -25,7 +25,7 @@ impl ColumnManager {
         }
 
         let column_name = name.trim().to_string();
-        if column_name.len() == 0 {
+        if column_name.is_empty() {
             return Err(ColumnError::EmptyName);
         }
 
@@ -40,5 +40,25 @@ impl ColumnManager {
 impl Default for ColumnManager {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::errors::column_error::ColumnError;
+    use crate::managers::column_manager::ColumnManager;
+
+    #[test]
+    fn add_column() {
+        let mut manager = ColumnManager::new();
+        let result = manager.add("A");
+        assert_eq!(result, Ok(0))
+    }
+
+    #[test]
+    fn add_column_empty_name() {
+        let mut manager = ColumnManager::new();
+        let result = manager.add("   ");
+        assert_eq!(result, Err(ColumnError::EmptyName));
     }
 }
