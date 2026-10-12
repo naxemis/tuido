@@ -27,7 +27,7 @@ impl Card {
         self.description.as_str()
     }
 
-    pub fn get_card_place(&self) -> u16 {
+    pub fn get_place(&self) -> u16 {
         self.card_place
     }
 
