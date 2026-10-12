@@ -34,28 +34,58 @@ impl List {
         self.name = new_name.to_owned();
     }
 
+    /// Adds a column to the list and returns its generated ID.
+    ///
+    /// Leading and trailing whitespace is removed from `name`.
+    ///
+    /// Returns [`ColumnError::ColumnIdLimitReached`] when no more column IDs
+    /// are available, [`ColumnError::ColumnPlaceLimitReached`] when no more
+    /// column places are available, or [`ColumnError::EmptyName`] when the
+    /// trimmed name is empty.
     pub fn add_column(&mut self, name: &str) -> Result<u8, ColumnError> {
         self.column_manager.add(name)
     }
 
+    /// Removes the column with the given ID.
+    ///
+    /// Returns the removed column, or [`ColumnError::ColumnNotFound`] if no
+    /// column has that ID.
     pub fn remove_column(&mut self, id: u8) -> Result<Column, ColumnError> {
         self.column_manager
             .remove(id)
             .ok_or(ColumnError::ColumnNotFound)
     }
 
+    /// Finds a column by its ID.
+    ///
+    /// Returns `None` if no column has that ID.
     pub fn get_column_by_id(&self, id: u8) -> Option<&Column> {
         self.column_manager.get_by_id(id)
     }
 
+    /// Finds all columns whose names exactly match `name`.
     pub fn get_column_by_name(&self, name: &str) -> Vec<&Column> {
         self.column_manager.get_by_name(name)
     }
 
+    /// Renames the column with the given ID.
+    ///
+    /// Leading and trailing whitespace is removed from `new_name`.
+    ///
+    /// Returns [`ColumnError::EmptyName`] if the trimmed name is empty, or
+    /// [`ColumnError::ColumnNotFound`] if no column has that ID.
     pub fn rename_column(&mut self, id: u8, new_name: &str) -> Result<(), ColumnError> {
         self.column_manager.rename(id, new_name)
     }
 
+    /// Moves a column to a new position and returns its final position.
+    ///
+    /// Columns between the old and new positions are shifted to preserve
+    /// consecutive positions.
+    ///
+    /// Returns [`ColumnError::ColumnNotFound`] if no column has the given ID,
+    /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
+    /// current range of column positions.
     pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         self.column_manager.move_column(id, new_place)
     }

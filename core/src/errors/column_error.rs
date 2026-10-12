@@ -1,3 +1,4 @@
+/// Errors that can occur while managing columns.
 #[derive(Debug, PartialEq, Eq)]
 pub enum ColumnError {
     /// The requested column does not exist.
