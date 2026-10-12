@@ -55,7 +55,7 @@ impl CardManager {
         self.cards.get(&id)
     }
 
-    pub(crate)  fn get_by_name(&self, name: &str) -> Vec<&Card> {
+    pub(crate) fn get_by_name(&self, name: &str) -> Vec<&Card> {
         let mut matching_cards = Vec::new();
 
         for card in self.cards.values() {
@@ -82,7 +82,11 @@ impl CardManager {
         }
     }
 
-    pub(crate) fn change_description(&mut self, id: u16, new_description: &str) -> Result<(), CardError> {
+    pub(crate) fn change_description(
+        &mut self,
+        id: u16,
+        new_description: &str,
+    ) -> Result<(), CardError> {
         match self.cards.get_mut(&id) {
             Some(card) => {
                 card.change_description(new_description);
@@ -99,7 +103,7 @@ impl CardManager {
         };
 
         if old_place == new_place {
-            return Ok(old_place)
+            return Ok(old_place);
         }
 
         if usize::from(new_place) >= self.cards.len() {

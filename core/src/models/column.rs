@@ -66,7 +66,11 @@ impl Column {
         self.card_manager.rename(id, name)
     }
 
-    pub fn change_card_description(&mut self, id: u16, new_description: &str) -> Result<(), CardError> {
+    pub fn change_card_description(
+        &mut self,
+        id: u16,
+        new_description: &str,
+    ) -> Result<(), CardError> {
         self.card_manager.change_description(id, new_description)
     }
 
