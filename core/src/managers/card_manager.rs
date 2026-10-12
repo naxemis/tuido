@@ -38,7 +38,17 @@ impl CardManager {
     }
 
     pub(crate) fn remove(&mut self, id: u16) -> Option<Card> {
-        self.cards.remove(&id)
+        let removed_card = self.cards.remove(&id)?;
+
+        let removed_card_place = removed_card.get_place();
+
+        for card in self.cards.values_mut() {
+            if card.get_place() > removed_card_place {
+                card.move_to(card.get_place() - 1);
+            }
+        }
+
+        Some(removed_card)
     }
 
     pub(crate) fn get_by_id(&self, id: u16) -> Option<&Card> {
