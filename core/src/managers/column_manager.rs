@@ -123,17 +123,17 @@ impl ColumnManager {
         for column in self.columns.values_mut() {
             if move_left {
                 if column.get_place() >= new_place && column.get_place() < old_place {
-                    column.change_place(column.get_place() + 1);
+                    column.move_to(column.get_place() + 1);
                 }
             } else {
                 if column.get_place() <= new_place && column.get_place() > old_place {
-                    column.change_place(column.get_place() - 1);
+                    column.move_to(column.get_place() - 1);
                 }
             }
         }
 
         let column = self.columns.get_mut(&id).unwrap();
-        column.change_place(new_place);
+        column.move_to(new_place);
 
         Ok(new_place)
     }

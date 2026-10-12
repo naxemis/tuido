@@ -36,7 +36,7 @@ impl Column {
     }
 
     /// Changes the column's position to `new_place`.
-    pub(crate) fn change_place(&mut self, new_place: u8) {
+    pub(crate) fn move_to(&mut self, new_place: u8) {
         self.column_place = new_place;
     }
 }
