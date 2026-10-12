@@ -3,12 +3,14 @@ use std::collections::HashMap;
 use crate::errors::column_error::ColumnError;
 use crate::models::column::Column;
 
+/// Stores and manages the columns belonging to a single list.
 pub struct ColumnManager {
     columns: HashMap<u8, Column>,
     next_id: u16,
 }
 
 impl ColumnManager {
+    /// Creates an empty column manager.
     pub fn new() -> Self {
         Self {
             columns: HashMap::new(),
@@ -16,6 +18,14 @@ impl ColumnManager {
         }
     }
 
+    /// Adds a column and returns its generated ID.
+    ///
+    /// Leading and trailing whitespace is removed from `name`.
+    ///
+    /// Returns [`ColumnError::ColumnIdLimitReached`] when no more column
+    /// IDs are available, [`ColumnError::ColumnPlaceLimitReached`] when no
+    /// more column places are available, or [`ColumnError::EmptyName`] when
+    /// the trimmed name is empty.
     pub fn add(&mut self, name: &str) -> Result<u8, ColumnError> {
         if self.next_id > u16::from(u8::MAX) {
             return Err(ColumnError::ColumnIdLimitReached);
@@ -37,14 +47,21 @@ impl ColumnManager {
         Ok(column_id)
     }
 
+    /// Removes the column with the given ID.
+    ///
+    /// Returns the removed column, or `None` if no column has that ID.
     pub fn remove(&mut self, id: u8) -> Option<Column> {
         self.columns.remove(&id)
     }
 
+    /// Finds a column by its ID.
+    ///
+    /// Returns `None` if no column has the given ID.
     pub fn get_by_id(&self, id: u8) -> Option<&Column> {
         self.columns.get(&id)
     }
 
+    /// Finds all columns whose names exactly match `name`.
     pub fn get_by_name(&self, name: &str) -> Vec<&Column> {
         let mut matching_columns = Vec::new();
 
@@ -57,6 +74,12 @@ impl ColumnManager {
         matching_columns
     }
 
+    /// Renames the column with the given ID.
+    ///
+    /// Leading and trailing whitespace is removed from `new_name`.
+    ///
+    /// Returns [`ColumnError::EmptyName`] if the trimmed name is empty, or
+    /// [`ColumnError::ColumnNotFound`] if no column has the given ID.
     pub fn rename(&mut self, id: u8, new_name: &str) -> Result<(), ColumnError> {
         let name = new_name.trim();
         if name.is_empty() {
@@ -72,6 +95,14 @@ impl ColumnManager {
         }
     }
 
+    /// Moves a column to a new position and returns its final position.
+    ///
+    /// Columns between the old and new positions are shifted to preserve
+    /// consecutive positions.
+    ///
+    /// Returns [`ColumnError::ColumnNotFound`] if no column has the given ID,
+    /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
+    /// current range of column positions.
     pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         let old_place = match self.get_by_id(id) {
             Some(column) => column.get_place(),

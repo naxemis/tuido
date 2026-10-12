@@ -8,6 +8,6 @@ pub enum ColumnError {
     ColumnIdLimitReached,
     /// No more column places are available.
     ColumnPlaceLimitReached,
-    /// No column place was found
+    /// No valid column place was found.
     InvalidColumnPlace,
 }
