@@ -3,3 +3,4 @@
 pub mod card_error;
 pub mod column_error;
 pub mod list_error;
+pub mod card_move_error;
