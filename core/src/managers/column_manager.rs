@@ -35,6 +35,10 @@ impl ColumnManager {
         self.next_id += 1;
         Ok(column_id)
     }
+
+    pub fn remove(&mut self, id: u8) -> Option<Column> {
+        self.columns.remove(&id)
+    }
 }
 
 impl Default for ColumnManager {
