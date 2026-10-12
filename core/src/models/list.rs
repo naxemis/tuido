@@ -37,5 +37,3 @@ mod tests {
         assert_eq!(list.get_name(), "B");
     }
 }
-
-

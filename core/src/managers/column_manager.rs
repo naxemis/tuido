@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+
 use crate::errors::column_error::ColumnError;
 use crate::models::column::Column;
 
@@ -69,7 +70,40 @@ impl ColumnManager {
             }
             None => Err(ColumnError::ColumnNotFound),
         }
+    }
 
+    pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<(u8), ColumnError> {
+        let old_place = match self.get_by_id(id) {
+            Some(column) => column.get_place(),
+            None => return Err(ColumnError::ColumnNotFound),
+        };
+
+        if old_place == new_place {
+            return Ok((old_place));
+        }
+
+        if usize::from(new_place) >= self.columns.len() {
+            return Err(ColumnError::InvalidColumnPlace);
+        }
+
+        let move_left = new_place < old_place;
+        let move_right = new_place > old_place;
+
+        for column in self.columns.values_mut() {
+            if move_left {
+                if column.get_place() <= new_place && column.get_place() < old_place {
+                    column.change_place(column.get_place() + 1);
+                }
+            } else if move_right
+                && column.get_place() <= new_place && column.get_place() > old_place {
+                    column.change_place(column.get_place() - 1);
+                }
+        }
+
+        let column = self.columns.get_mut(&id).unwrap();
+        column.change_place(new_place);
+
+        Ok((new_place))
     }
 }
 

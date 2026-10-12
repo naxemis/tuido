@@ -20,7 +20,7 @@ impl Column {
     pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
-    
+
     pub fn get_place(&self) -> u8 {
         self.column_place
     }
