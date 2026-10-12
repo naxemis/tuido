@@ -15,19 +15,19 @@ impl Card {
         }
     }
 
-    pub fn id(&self) -> u16 {
+    pub fn get_id(&self) -> u16 {
         self.id
     }
 
-    pub fn name(&self) -> &str {
+    pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
 
-    pub fn description(&self) -> &str {
+    pub fn get_description(&self) -> &str {
         self.description.as_str()
     }
 
-    pub fn card_place(&self) -> u16 {
+    pub fn get_card_place(&self) -> u16 {
         self.card_place
     }
 
