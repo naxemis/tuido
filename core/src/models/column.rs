@@ -89,10 +89,18 @@ mod test {
     use super::*;
 
     #[test]
-    fn rename_column() {
+    fn rename() {
         let mut column = Column::new(0, String::from("A"), 0);
         column.rename("B");
 
         assert_eq!(column.get_name(), "B");
+    }
+
+    #[test]
+    fn move_to() {
+        let mut column = Column::new(0, String::from("A"), 0);
+        column.move_to(1);
+        
+        assert_eq!(column.get_place(), 1);
     }
 }
