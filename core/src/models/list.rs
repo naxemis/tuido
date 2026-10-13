@@ -20,17 +20,17 @@ impl List {
     }
 
     /// Returns the list's ID.
-    pub fn get_list_id(&self) -> u16 {
+    pub fn get_id(&self) -> u16 {
         self.id
     }
 
     /// Returns the list's name.
-    pub fn get_list_name(&self) -> &str {
+    pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
 
     /// Replaces the list's name with `new_name`.
-    pub(crate) fn rename_list(&mut self, new_name: &str) {
+    pub(crate) fn rename(&mut self, new_name: &str) {
         self.name = new_name.to_owned();
     }
 
@@ -96,15 +96,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn rename_list() {
+    fn rename() {
         let mut list = List::new(1, String::from("A"));
-        list.rename_list("B");
+        list.rename("B");
 
-        assert_eq!(list.get_list_name(), "B");
+        assert_eq!(list.get_name(), "B");
     }
 
     #[test]
-    fn check_for_column_manager() {
+    fn check_for_column() {
         let mut list = List::new(1, String::from("A"));
 
         assert!(!list.get_column_by_id(0).is_some());
