@@ -150,4 +150,44 @@ mod tests {
 
         assert!(list.get_column_by_id(column_id).is_some());
     }
+
+    #[test]
+    fn move_card_to_column() {
+        let mut list = List::new(1, String::from("List"));
+
+        let source_column_id = list.add_column("Source").unwrap();
+        let target_column_id = list.add_column("Target").unwrap();
+
+        let card_id = list
+            .get_column_by_id_mut(source_column_id)
+            .unwrap()
+            .add_card("Card")
+            .unwrap();
+
+        let result = list.move_card_to_column(
+            source_column_id,
+            card_id,
+            target_column_id,
+            0,
+        );
+
+        assert_eq!(result, Ok(target_column_id));
+
+        assert!(
+            list.get_column_by_id(source_column_id)
+                .unwrap()
+                .get_card_by_id(card_id)
+                .is_none()
+        );
+
+        let moved_card = list
+            .get_column_by_id(target_column_id)
+            .unwrap()
+            .get_card_by_id(card_id)
+            .unwrap();
+
+        assert_eq!(moved_card.get_id(), card_id);
+        assert_eq!(moved_card.get_name(), "Card");
+        assert_eq!(moved_card.get_place(), 0);
+    }
 }
