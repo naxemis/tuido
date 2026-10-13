@@ -95,21 +95,49 @@ impl List {
         self.column_manager.move_to(id, new_place)
     }
 
-    pub fn move_card_to_column(&mut self, source_column_id: u8, card_id: u16, target_column_id: u8, target_place: u16) -> Result<u8, CardMoveError> {
+    /// Moves a card from one column to another.
+    ///
+    /// The card keeps its ID, name, and description. Its position is updated
+    /// to `target_place` in the target column.
+    ///
+    /// Returns the ID of the target column when the card is moved successfully.
+    ///
+    /// Returns [`CardMoveError::SourceColumnNotFound`] if the source column
+    /// does not exist, [`CardMoveError::TargetColumnNotFound`] if the target
+    /// column does not exist, [`CardMoveError::CardNotFound`] if the card does
+    /// not exist in the source column, [`CardMoveError::InvalidCardPlace`] if
+    /// the target position is invalid, or
+    /// [`CardMoveError::CardAlreadyInserted`] if the target column already
+    /// contains a card with the same ID.
+    pub fn move_card_to_column(
+        &mut self,
+        source_column_id: u8,
+        card_id: u16,
+        target_column_id: u8,
+        target_place: u16,
+    ) -> Result<u8, CardMoveError> {
         if self.get_column_by_id(source_column_id).is_none() {
-            return Err(CardMoveError::SourceColumnNotFound)
+            return Err(CardMoveError::SourceColumnNotFound);
         }
 
         if self.get_column_by_id(target_column_id).is_none() {
-            return Err(CardMoveError::TargetColumnNotFound)
+            return Err(CardMoveError::TargetColumnNotFound);
         }
 
-        if self.get_column_by_id(source_column_id).unwrap().get_card_by_id(card_id).is_none() {
-            return Err(CardMoveError::CardNotFound)
+        if self
+            .get_column_by_id(source_column_id)
+            .unwrap()
+            .get_card_by_id(card_id)
+            .is_none()
+        {
+            return Err(CardMoveError::CardNotFound);
         }
 
         if source_column_id == target_column_id {
-            self.get_column_by_id_mut(source_column_id).unwrap().move_card_to(card_id, target_place).unwrap();
+            self.get_column_by_id_mut(source_column_id)
+                .unwrap()
+                .move_card_to(card_id, target_place)
+                .unwrap();
             return Ok(source_column_id);
         }
 
@@ -164,12 +192,7 @@ mod tests {
             .add_card("Card")
             .unwrap();
 
-        let result = list.move_card_to_column(
-            source_column_id,
-            card_id,
-            target_column_id,
-            0,
-        );
+        let result = list.move_card_to_column(source_column_id, card_id, target_column_id, 0);
 
         assert_eq!(result, Ok(target_column_id));
 

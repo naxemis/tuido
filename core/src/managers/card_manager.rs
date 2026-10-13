@@ -38,7 +38,11 @@ impl CardManager {
         Ok(card_id)
     }
 
-    pub(crate) fn can_insert_card(&self, card_id: u16, target_place: u16, ) -> Result<(), CardMoveError> {
+    pub(crate) fn can_insert_card(
+        &self,
+        card_id: u16,
+        target_place: u16,
+    ) -> Result<(), CardMoveError> {
         if usize::from(target_place) > self.cards.len() {
             return Err(CardMoveError::InvalidCardPlace);
         }

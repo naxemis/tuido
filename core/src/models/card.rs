@@ -6,6 +6,7 @@ pub struct Card {
 }
 
 impl Card {
+    /// Creates a card with the given ID, name, and position.
     pub fn new(id: u16, name: String, card_place: u16) -> Self {
         Self {
             id,
@@ -15,18 +16,22 @@ impl Card {
         }
     }
 
+    /// Returns the card's ID.
     pub fn get_id(&self) -> u16 {
         self.id
     }
 
+    /// Returns the card's name.
     pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
 
+    /// Returns the card's description.
     pub fn get_description(&self) -> &str {
         self.description.as_str()
     }
 
+    /// Returns the card's position within its column.
     pub fn get_place(&self) -> u16 {
         self.card_place
     }
