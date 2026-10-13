@@ -42,7 +42,11 @@ impl CardManager {
         usize::from(target_place) <= self.cards.len()
     }
 
-    pub(crate) fn insert(&mut self, mut card: Card, target_place: u16) -> Result<u16, CardMoveError> {
+    pub(crate) fn insert(
+        &mut self,
+        mut card: Card,
+        target_place: u16,
+    ) -> Result<u16, CardMoveError> {
         if !self.is_valid_place_for_insert(target_place) {
             return Err(CardMoveError::InvalidCardPlace);
         }
@@ -257,7 +261,14 @@ mod tests {
         let result = manager.insert(card_to_insert, 0);
 
         assert_eq!(result, Ok(1));
-        assert_eq!(manager.cards.get(&result.unwrap()).unwrap().get_description(), "A");
+        assert_eq!(
+            manager
+                .cards
+                .get(&result.unwrap())
+                .unwrap()
+                .get_description(),
+            "A"
+        );
     }
 
     #[test]
@@ -287,6 +298,13 @@ mod tests {
     }
 
     #[test]
+    fn get_by_id_missing() {
+        let manager = CardManager::new();
+
+        assert!(manager.get_by_id(0).is_none());
+    }
+
+    #[test]
     fn get_by_name() {
         let mut manager = CardManager::new();
         manager.add("A").unwrap();
@@ -294,6 +312,13 @@ mod tests {
         let result = manager.get_by_name("A");
 
         assert!(!result.is_empty())
+    }
+
+    #[test]
+    fn get_by_name_missing() {
+        let manager = CardManager::new();
+
+        assert!(manager.get_by_name("A").is_empty());
     }
 
     #[test]

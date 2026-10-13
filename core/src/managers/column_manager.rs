@@ -191,6 +191,13 @@ mod tests {
     }
 
     #[test]
+    fn get_by_id_missing() {
+        let manager = ColumnManager::new();
+
+        assert!(manager.get_by_id(0).is_none());
+    }
+
+    #[test]
     fn get_by_name() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
@@ -198,6 +205,13 @@ mod tests {
         let result = manager.get_by_name("A");
 
         assert!(!result.is_empty())
+    }
+
+    #[test]
+    fn get_by_name_missing() {
+        let manager = ColumnManager::new();
+
+        assert!(manager.get_by_name("A").is_empty());
     }
 
     #[test]

@@ -100,7 +100,7 @@ mod test {
     fn move_to() {
         let mut column = Column::new(0, String::from("A"), 0);
         column.move_to(1);
-        
+
         assert_eq!(column.get_place(), 1);
     }
 }
