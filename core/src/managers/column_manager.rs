@@ -161,8 +161,7 @@ impl Default for ColumnManager {
 
 #[cfg(test)]
 mod tests {
-    use crate::errors::column_error::ColumnError;
-    use crate::managers::column_manager::ColumnManager;
+    use super::*;
 
     #[test]
     fn add() {
@@ -205,11 +204,13 @@ mod tests {
     fn remove() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
+        let to_be_moved = manager.add("B").unwrap();
 
         let result = manager.remove(id);
 
         assert!(result.is_some());
         assert!(manager.get_by_id(id).is_none());
+        assert_eq!(manager.get_by_id(to_be_moved).unwrap().get_place(), 0);
     }
 
     #[test]
