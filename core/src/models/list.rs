@@ -1,3 +1,4 @@
+use crate::errors::card_move_error::CardMoveError;
 use crate::errors::column_error::ColumnError;
 use crate::managers::column_manager::ColumnManager;
 use crate::models::column::Column;
@@ -86,8 +87,40 @@ impl List {
     /// Returns [`ColumnError::ColumnNotFound`] if no column has the given ID,
     /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
     /// current range of column positions.
-    pub fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
+    pub fn move_column_to(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         self.column_manager.move_to(id, new_place)
+    }
+
+    pub fn move_card_to_column(&mut self, source_column_id: u8, card_id: u16, target_column_id: u8, target_place: u16) -> Result<u8, CardMoveError> {
+        if self.column_manager.get_by_id(source_column_id).is_none() {
+            return Err(CardMoveError::SourceColumnNotFound)
+        }
+
+        if self.column_manager.get_by_id(target_column_id).is_none() {
+            return Err(CardMoveError::TargetColumnNotFound)
+        }
+
+        if self.column_manager.get_by_id(source_column_id).unwrap().get_card_by_id(card_id).is_none() {
+            return Err(CardMoveError::CardNotFound)
+        }
+
+        if source_column_id == target_column_id {
+            self.column_manager.get_by_id_mut(source_column_id).unwrap().move_card_to(card_id, target_place).unwrap();
+            return Ok(source_column_id);
+        }
+
+        let target_column = self.column_manager.get_by_id(target_column_id).unwrap();
+        target_column.can_insert_card(card_id, target_place)?;
+
+        let removed_card = {
+            let source_column = self.column_manager.get_by_id_mut(source_column_id).unwrap();
+            source_column.remove_card(card_id).unwrap()
+        };
+
+        let target_column = self.column_manager.get_by_id_mut(target_column_id).unwrap();
+        target_column.insert_card(removed_card, target_place)?;
+
+        Ok(target_column_id)
     }
 }
 

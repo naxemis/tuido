@@ -38,8 +38,16 @@ impl CardManager {
         Ok(card_id)
     }
 
-    fn is_valid_place_for_insert(&self, target_place: u16) -> bool {
-        usize::from(target_place) <= self.cards.len()
+    pub(crate) fn can_insert_card(&self, card_id: u16, target_place: u16, ) -> Result<(), CardMoveError> {
+        if usize::from(target_place) > self.cards.len() {
+            return Err(CardMoveError::InvalidCardPlace);
+        }
+
+        if self.cards.contains_key(&card_id) {
+            return Err(CardMoveError::CardAlreadyInserted);
+        }
+
+        Ok(())
     }
 
     pub(crate) fn insert(
@@ -47,13 +55,7 @@ impl CardManager {
         mut card: Card,
         target_place: u16,
     ) -> Result<u16, CardMoveError> {
-        if !self.is_valid_place_for_insert(target_place) {
-            return Err(CardMoveError::InvalidCardPlace);
-        }
-
-        if self.cards.contains_key(&card.get_id()) {
-            return Err(CardMoveError::CardAlreadyInserted);
-        }
+        self.can_insert_card(card.get_id(), target_place)?;
 
         for card in self.cards.values_mut() {
             if card.get_place() >= target_place {

@@ -51,6 +51,9 @@ impl Column {
         self.card_manager.add(name)
     }
 
+    pub(crate) fn can_insert_card(&self, card_id: u16, target_place: u16) -> Result<(), CardMoveError> {
+        self.card_manager.can_insert_card(card_id, target_place)
+    }
     pub fn insert_card(&mut self, card: Card, target_place: u16) -> Result<u16, CardMoveError> {
         self.card_manager.insert(card, target_place)
     }
@@ -79,7 +82,7 @@ impl Column {
         self.card_manager.change_description(id, new_description)
     }
 
-    pub fn move_card(&mut self, id: u16, new_place: u16) -> Result<u16, CardError> {
+    pub(crate) fn move_card_to(&mut self, id: u16, new_place: u16) -> Result<u16, CardError> {
         self.card_manager.move_to(id, new_place)
     }
 }
