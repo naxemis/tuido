@@ -17,10 +17,12 @@ If this section is N/A for the PR, remove the example steps below and replace th
 Testing is not applicable for this Pull Request.
 
 This helps reviewers see the testing section was intentionally skipped.
+
+Feel free to add or change the steps.
 -->
 
-1. Run tests with...
-2. Complete other step...
+1. Run `cargo test`.
+2. Run `cargo doc --no-deps`.
 
 ## Pre-merge checklist
 <!--
