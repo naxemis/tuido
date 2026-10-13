@@ -43,3 +43,32 @@ impl Card {
         self.card_place = new_place;
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn rename() {
+        let mut card = Card::new(0, String::from("A"), 0);
+        card.rename("B");
+
+        assert_eq!(card.get_name(), "B");
+    }
+
+    #[test]
+    fn change_description() {
+        let mut card = Card::new(0, String::from("A"), 0);
+        card.change_description("D");
+
+        assert_eq!(card.get_description(), "D");
+    }
+
+    #[test]
+    fn move_to() {
+        let mut card = Card::new(0, String::from("A"), 0);
+        card.move_to(1);
+
+        assert_eq!(card.get_place(), 1);
+    }
+}
