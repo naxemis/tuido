@@ -69,7 +69,11 @@ impl Column {
     ///
     /// Cards at or after the target position are shifted one place to the
     /// right. The inserted card keeps its ID, name, and description.
-    pub(crate) fn insert_card(&mut self, card: Card, target_place: u16) -> Result<u16, CardMoveError> {
+    pub(crate) fn insert_card(
+        &mut self,
+        card: Card,
+        target_place: u16,
+    ) -> Result<u16, CardMoveError> {
         self.card_manager.insert(card, target_place)
     }
 
