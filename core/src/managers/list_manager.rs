@@ -4,7 +4,7 @@ use crate::errors::list_error::ListError;
 use crate::models::list::List;
 
 /// Stores and manages the lists in the application.
-pub(crate) struct ListManager {
+pub struct ListManager {
     lists: HashMap<u16, List>,
     next_id: u32,
 }
@@ -23,7 +23,7 @@ impl ListManager {
     /// Leading and trailing whitespace is removed from `name`.
     ///
     /// Returns [`ListError::ListIdLimitReached`] when no more list IDs are available.
-    pub(crate) fn add(&mut self, name: &str) -> Result<u16, ListError> {
+    pub fn add(&mut self, name: &str) -> Result<u16, ListError> {
         if self.next_id > u32::from(u16::MAX) {
             return Err(ListError::ListIdLimitReached);
         }
@@ -43,19 +43,19 @@ impl ListManager {
     /// Removes the list with the given ID.
     ///
     /// Returns the removed list, or `None` if no list has that ID.
-    pub(crate) fn remove(&mut self, id: u16) -> Option<List> {
+    pub fn remove(&mut self, id: u16) -> Option<List> {
         self.lists.remove(&id)
     }
 
     /// Finds a list by its ID.
     ///
     /// Returns `None` if no list has the given ID.
-    pub(crate) fn get_by_id(&self, id: u16) -> Option<&List> {
+    pub fn get_by_id(&self, id: u16) -> Option<&List> {
         self.lists.get(&id)
     }
 
     /// Finds all lists whose names exactly match `name`.
-    pub(crate) fn get_by_name(&self, name: &str) -> Vec<&List> {
+    pub fn get_by_name(&self, name: &str) -> Vec<&List> {
         let mut matching_lists = Vec::new();
 
         for list in self.lists.values() {
@@ -73,7 +73,7 @@ impl ListManager {
     ///
     /// Returns [`ListError::EmptyName`] if the trimmed name is empty, or
     /// [`ListError::ListNotFound`] if no list has the given ID.
-    pub(crate) fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
+    pub fn rename(&mut self, id: u16, new_name: &str) -> Result<(), ListError> {
         let name = new_name.trim();
         if name.is_empty() {
             return Err(ListError::EmptyName);

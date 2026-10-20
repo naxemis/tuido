@@ -45,7 +45,7 @@ impl List {
     /// are available, [`ColumnError::ColumnPlaceLimitReached`] when no more
     /// column places are available, or [`ColumnError::EmptyName`] when the
     /// trimmed name is empty.
-    pub(crate) fn add_column(&mut self, name: &str) -> Result<u8, ColumnError> {
+    pub fn add_column(&mut self, name: &str) -> Result<u8, ColumnError> {
         self.column_manager.add(name)
     }
 
@@ -53,7 +53,7 @@ impl List {
     ///
     /// Returns the removed column, or [`ColumnError::ColumnNotFound`] if no
     /// column has that ID.
-    pub(crate) fn remove_column(&mut self, id: u8) -> Result<Column, ColumnError> {
+    pub fn remove_column(&mut self, id: u8) -> Result<Column, ColumnError> {
         self.column_manager
             .remove(id)
             .ok_or(ColumnError::ColumnNotFound)
@@ -81,7 +81,7 @@ impl List {
     ///
     /// Returns [`ColumnError::EmptyName`] if the trimmed name is empty, or
     /// [`ColumnError::ColumnNotFound`] if no column has that ID.
-    pub(crate) fn rename_column(&mut self, id: u8, new_name: &str) -> Result<(), ColumnError> {
+    pub fn rename_column(&mut self, id: u8, new_name: &str) -> Result<(), ColumnError> {
         self.column_manager.rename(id, new_name)
     }
 
@@ -93,14 +93,14 @@ impl List {
     /// Returns [`ColumnError::ColumnNotFound`] if no column has the given ID,
     /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
     /// current range of column positions.
-    pub(crate) fn move_column_to(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
+    pub fn move_column_to(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         self.column_manager.move_to(id, new_place)
     }
 
     /// Adds a new card to the end of the given column and returns its ID.
     ///
     /// Returns [`CardError::CardNotFound`] if no column has `column_id`.
-    pub(crate) fn add_card(&mut self, column_id: u8, name: &str) -> Result<u16, CardError> {
+    pub fn add_card(&mut self, column_id: u8, name: &str) -> Result<u16, CardError> {
         self.get_column_by_id_mut(column_id)
             .ok_or(CardError::CardNotFound)?
             .add_card(name)
@@ -110,7 +110,7 @@ impl List {
     ///
     /// Cards after the removed card are shifted one place to the left.
     /// Returns `None` if the column or card does not exist.
-    pub(crate) fn remove_card(&mut self, column_id: u8, card_id: u16) -> Option<Card> {
+    pub fn remove_card(&mut self, column_id: u8, card_id: u16) -> Option<Card> {
         self.get_column_by_id_mut(column_id)?.remove_card(card_id)
     }
 
@@ -131,7 +131,7 @@ impl List {
     ///
     /// Returns [`CardError::CardNotFound`] if the column or card does not
     /// exist, or [`CardError::EmptyName`] if the trimmed name is empty.
-    pub(crate) fn rename_card(
+    pub fn rename_card(
         &mut self,
         column_id: u8,
         card_id: u16,
@@ -146,7 +146,7 @@ impl List {
     ///
     /// Returns [`CardError::CardNotFound`] if the column or card does not
     /// exist.
-    pub(crate) fn change_card_description(
+    pub fn change_card_description(
         &mut self,
         column_id: u8,
         card_id: u16,
@@ -164,7 +164,7 @@ impl List {
     ///
     /// Returns the card's final position, or [`CardError`] if the column,
     /// card, or target position is invalid.
-    pub(crate) fn move_card_in_column(
+    pub fn move_card_in_column(
         &mut self,
         column_id: u8,
         card_id: u16,
@@ -189,7 +189,7 @@ impl List {
     /// the target position is invalid, or
     /// [`CardMoveError::CardAlreadyInserted`] if the target column already
     /// contains a card with the same ID.
-    pub(crate) fn move_card_to_column(
+    pub fn move_card_to_column(
         &mut self,
         source_column_id: u8,
         card_id: u16,
