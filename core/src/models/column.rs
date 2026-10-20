@@ -1,9 +1,12 @@
+use serde::{Deserialize, Serialize};
+
 use crate::errors::card_error::CardError;
 use crate::errors::card_move_error::CardMoveError;
 use crate::managers::card_manager::CardManager;
 use crate::models::card::Card;
 
 /// A column in a to-do list identified by an ID, name, and position.
+#[derive(Serialize, Deserialize)]
 pub struct Column {
     id: u8,
     name: String,
