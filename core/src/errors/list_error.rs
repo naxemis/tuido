@@ -6,5 +6,5 @@ pub enum ListError {
     /// A list name is empty after trimming whitespace.
     EmptyName,
     /// No more list IDs are available.
-    IdExhausted,
+    ListIdLimitReached,
 }
