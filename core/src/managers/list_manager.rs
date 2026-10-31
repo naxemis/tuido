@@ -59,7 +59,7 @@ impl ListManager {
         let mut matching_lists = Vec::new();
 
         for list in self.lists.values() {
-            if list.get_list_name() == name {
+            if list.get_name() == name {
                 matching_lists.push(list);
             }
         }
@@ -81,7 +81,7 @@ impl ListManager {
 
         match self.lists.get_mut(&id) {
             Some(list) => {
-                list.rename_list(name);
+                list.rename(name);
                 Ok(())
             }
             None => Err(ListError::ListNotFound),
@@ -127,6 +127,13 @@ mod tests {
     }
 
     #[test]
+    fn get_by_id_missing() {
+        let manager = ListManager::new();
+
+        assert!(manager.get_by_id(0).is_none());
+    }
+
+    #[test]
     fn get_by_name() {
         let mut manager = ListManager::new();
         manager.add("A").unwrap();
@@ -134,6 +141,13 @@ mod tests {
         let result = manager.get_by_name("A");
 
         assert!(!result.is_empty());
+    }
+
+    #[test]
+    fn get_by_name_missing() {
+        let manager = ListManager::new();
+
+        assert!(manager.get_by_name("A").is_empty());
     }
 
     #[test]
@@ -164,7 +178,7 @@ mod tests {
 
         let result = manager.get_by_id(id).unwrap();
 
-        assert_eq!(result.get_list_name(), "B");
+        assert_eq!(result.get_name(), "B");
     }
 
     #[test]
