@@ -51,7 +51,17 @@ impl ColumnManager {
     ///
     /// Returns the removed column, or `None` if no column has that ID.
     pub(crate) fn remove(&mut self, id: u8) -> Option<Column> {
-        self.columns.remove(&id)
+        let removed_column = self.columns.remove(&id)?;
+
+        let removed_column_place = removed_column.get_place();
+
+        for column in self.columns.values_mut() {
+            if column.get_place() > removed_column_place {
+                column.move_to(column.get_place() - 1);
+            }
+        }
+
+        Some(removed_column)
     }
 
     /// Finds a column by its ID.
@@ -59,6 +69,10 @@ impl ColumnManager {
     /// Returns `None` if no column has the given ID.
     pub(crate) fn get_by_id(&self, id: u8) -> Option<&Column> {
         self.columns.get(&id)
+    }
+
+    pub(crate) fn get_by_id_mut(&mut self, id: u8) -> Option<&mut Column> {
+        self.columns.get_mut(&id)
     }
 
     /// Finds all columns whose names exactly match `name`.
@@ -103,7 +117,7 @@ impl ColumnManager {
     /// Returns [`ColumnError::ColumnNotFound`] if no column has the given ID,
     /// or [`ColumnError::InvalidColumnPlace`] if `new_place` is outside the
     /// current range of column positions.
-    pub(crate) fn move_column(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
+    pub(crate) fn move_to(&mut self, id: u8, new_place: u8) -> Result<u8, ColumnError> {
         let old_place = match self.get_by_id(id) {
             Some(column) => column.get_place(),
             None => return Err(ColumnError::ColumnNotFound),
@@ -123,17 +137,17 @@ impl ColumnManager {
         for column in self.columns.values_mut() {
             if move_left {
                 if column.get_place() >= new_place && column.get_place() < old_place {
-                    column.change_place(column.get_place() + 1);
+                    column.move_to(column.get_place() + 1);
                 }
             } else {
                 if column.get_place() <= new_place && column.get_place() > old_place {
-                    column.change_place(column.get_place() - 1);
+                    column.move_to(column.get_place() - 1);
                 }
             }
         }
 
         let column = self.columns.get_mut(&id).unwrap();
-        column.change_place(new_place);
+        column.move_to(new_place);
 
         Ok(new_place)
     }
@@ -147,8 +161,7 @@ impl Default for ColumnManager {
 
 #[cfg(test)]
 mod tests {
-    use crate::errors::column_error::ColumnError;
-    use crate::managers::column_manager::ColumnManager;
+    use super::*;
 
     #[test]
     fn add() {
@@ -178,6 +191,13 @@ mod tests {
     }
 
     #[test]
+    fn get_by_id_missing() {
+        let manager = ColumnManager::new();
+
+        assert!(manager.get_by_id(0).is_none());
+    }
+
+    #[test]
     fn get_by_name() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
@@ -188,14 +208,23 @@ mod tests {
     }
 
     #[test]
+    fn get_by_name_missing() {
+        let manager = ColumnManager::new();
+
+        assert!(manager.get_by_name("A").is_empty());
+    }
+
+    #[test]
     fn remove() {
         let mut manager = ColumnManager::new();
         let id = manager.add("A").unwrap();
+        let to_be_moved = manager.add("B").unwrap();
 
         let result = manager.remove(id);
 
         assert!(result.is_some());
         assert!(manager.get_by_id(id).is_none());
+        assert_eq!(manager.get_by_id(to_be_moved).unwrap().get_place(), 0);
     }
 
     #[test]
@@ -240,13 +269,13 @@ mod tests {
     }
 
     #[test]
-    fn move_column_left() {
+    fn move_to_left() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
         manager.add("B").unwrap();
         manager.add("C").unwrap();
 
-        let result = manager.move_column(2, 0).unwrap();
+        let result = manager.move_to(2, 0).unwrap();
 
         assert_eq!(manager.get_by_id(0).unwrap().get_place(), 1);
         assert_eq!(manager.get_by_id(1).unwrap().get_place(), 2);
@@ -254,13 +283,13 @@ mod tests {
     }
 
     #[test]
-    fn move_column_right() {
+    fn move_to_right() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
         manager.add("B").unwrap();
         manager.add("C").unwrap();
 
-        let result = manager.move_column(0, 2).unwrap();
+        let result = manager.move_to(0, 2).unwrap();
 
         assert_eq!(result, 2);
         assert_eq!(manager.get_by_id(1).unwrap().get_place(), 0);
@@ -268,36 +297,36 @@ mod tests {
     }
 
     #[test]
-    fn move_column_to_same_place() {
+    fn move_to_same_place() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
 
-        let result = manager.move_column(0, 0);
+        let result = manager.move_to(0, 0);
 
         assert_eq!(result, Ok(0));
         assert_eq!(manager.get_by_id(0).unwrap().get_place(), 0);
     }
 
     #[test]
-    fn move_column_invalid_column() {
+    fn move_to_invalid_column() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
         manager.add("B").unwrap();
         manager.add("C").unwrap();
 
-        let result = manager.move_column(10, 0);
+        let result = manager.move_to(10, 0);
 
         assert_eq!(result, Err(ColumnError::ColumnNotFound));
     }
 
     #[test]
-    fn move_column_invalid_place() {
+    fn move_to_invalid_place() {
         let mut manager = ColumnManager::new();
         manager.add("A").unwrap();
         manager.add("B").unwrap();
         manager.add("C").unwrap();
 
-        let result = manager.move_column(0, 10);
+        let result = manager.move_to(0, 10);
 
         assert_eq!(result, Err(ColumnError::InvalidColumnPlace));
     }
