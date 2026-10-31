@@ -6,7 +6,7 @@ Project is under development. Old repository was lost, rebuilding `core/` with o
 
 ## Features
 ### Minimal Viable Product:
-- [ ] Creating, deleting, and renaming lists
+- [x] Creating, deleting, and renaming lists
 - [ ] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
 - [ ] Creating, deleting, and renaming cards in lists
 - [ ] Moving cards between columns
