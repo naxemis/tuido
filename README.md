@@ -9,7 +9,7 @@ Project is under development. Old repository was lost, rebuilding `core/` with o
 - [x] Creating, deleting, and renaming lists
 - [x] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
 - [x] Creating, deleting, and renaming cards in lists
-- [ ] Moving cards between columns
+- [x] Moving cards between columns
 - [ ] Saving lists in separate JSON files after every change
 - [ ] TUI using Ratatui
 ### Full Release:

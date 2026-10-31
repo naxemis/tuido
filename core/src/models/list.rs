@@ -1,6 +1,8 @@
+use crate::errors::card_error::CardError;
 use crate::errors::card_move_error::CardMoveError;
 use crate::errors::column_error::ColumnError;
 use crate::managers::column_manager::ColumnManager;
+use crate::models::card::Card;
 use crate::models::column::Column;
 
 /// A to-do list identified by a numeric ID and a name.
@@ -95,6 +97,84 @@ impl List {
         self.column_manager.move_to(id, new_place)
     }
 
+    /// Adds a new card to the end of the given column and returns its ID.
+    ///
+    /// Returns [`CardError::CardNotFound`] if no column has `column_id`.
+    pub fn add_card(&mut self, column_id: u8, name: &str) -> Result<u16, CardError> {
+        self.get_column_by_id_mut(column_id)
+            .ok_or(CardError::CardNotFound)?
+            .add_card(name)
+    }
+
+    /// Removes a card from the given column.
+    ///
+    /// Cards after the removed card are shifted one place to the left.
+    /// Returns `None` if the column or card does not exist.
+    pub fn remove_card(&mut self, column_id: u8, card_id: u16) -> Option<Card> {
+        self.get_column_by_id_mut(column_id)?.remove_card(card_id)
+    }
+
+    /// Finds a card by its ID in the given column.
+    pub fn get_card_by_id(&self, column_id: u8, card_id: u16) -> Option<&Card> {
+        self.get_column_by_id(column_id)?.get_card_by_id(card_id)
+    }
+
+    /// Finds all cards whose names exactly match `name` in the given column.
+    pub fn get_card_by_name(&self, column_id: u8, name: &str) -> Vec<&Card> {
+        self.get_column_by_id(column_id)
+            .map_or_else(Vec::new, |column| column.get_card_by_name(name))
+    }
+
+    /// Renames a card in the given column.
+    ///
+    /// Leading and trailing whitespace is removed from `new_name`.
+    ///
+    /// Returns [`CardError::CardNotFound`] if the column or card does not
+    /// exist, or [`CardError::EmptyName`] if the trimmed name is empty.
+    pub fn rename_card(
+        &mut self,
+        column_id: u8,
+        card_id: u16,
+        new_name: &str,
+    ) -> Result<(), CardError> {
+        self.get_column_by_id_mut(column_id)
+            .ok_or(CardError::CardNotFound)?
+            .rename_card(card_id, new_name)
+    }
+
+    /// Replaces a card's description in the given column.
+    ///
+    /// Returns [`CardError::CardNotFound`] if the column or card does not
+    /// exist.
+    pub fn change_card_description(
+        &mut self,
+        column_id: u8,
+        card_id: u16,
+        new_description: &str,
+    ) -> Result<(), CardError> {
+        self.get_column_by_id_mut(column_id)
+            .ok_or(CardError::CardNotFound)?
+            .change_card_description(card_id, new_description)
+    }
+
+    /// Moves a card to a new position within its column.
+    ///
+    /// Cards between the old and new positions are shifted to preserve
+    /// consecutive positions.
+    ///
+    /// Returns the card's final position, or [`CardError`] if the column,
+    /// card, or target position is invalid.
+    pub fn move_card_in_column(
+        &mut self,
+        column_id: u8,
+        card_id: u16,
+        new_place: u16,
+    ) -> Result<u16, CardError> {
+        self.get_column_by_id_mut(column_id)
+            .ok_or(CardError::CardNotFound)?
+            .move_card_to(card_id, new_place)
+    }
+
     /// Moves a card from one column to another.
     ///
     /// The card keeps its ID, name, and description. Its position is updated
@@ -134,11 +214,14 @@ impl List {
         }
 
         if source_column_id == target_column_id {
-            self.get_column_by_id_mut(source_column_id)
-                .unwrap()
-                .move_card_to(card_id, target_place)
-                .unwrap();
-            return Ok(source_column_id);
+            return self
+                .move_card_in_column(source_column_id, card_id, target_place)
+                .map(|_| source_column_id)
+                .map_err(|error| match error {
+                    CardError::CardNotFound => CardMoveError::CardNotFound,
+                    CardError::InvalidCardPlace => CardMoveError::InvalidCardPlace,
+                    _ => unreachable!(),
+                });
         }
 
         let target_column = self.get_column_by_id(target_column_id).unwrap();
@@ -212,5 +295,69 @@ mod tests {
         assert_eq!(moved_card.get_id(), card_id);
         assert_eq!(moved_card.get_name(), "Card");
         assert_eq!(moved_card.get_place(), 0);
+    }
+
+    #[test]
+    fn card_operations() {
+        let mut list = List::new(1, String::from("List"));
+        let column_id = list.add_column("Column").unwrap();
+
+        let card_id = list.add_card(column_id, " Card ").unwrap();
+        assert_eq!(
+            list.get_card_by_id(column_id, card_id).unwrap().get_name(),
+            "Card"
+        );
+        assert_eq!(list.get_card_by_name(column_id, "Card").len(), 1);
+
+        list.rename_card(column_id, card_id, " Renamed ").unwrap();
+        list.change_card_description(column_id, card_id, "Description")
+            .unwrap();
+        let card = list.get_card_by_id(column_id, card_id).unwrap();
+        assert_eq!(card.get_name(), "Renamed");
+        assert_eq!(card.get_description(), "Description");
+
+        let second_card_id = list.add_card(column_id, "Second").unwrap();
+        assert_eq!(
+            list.move_card_in_column(column_id, second_card_id, 0),
+            Ok(0)
+        );
+        assert_eq!(
+            list.get_card_by_id(column_id, card_id).unwrap().get_place(),
+            1
+        );
+        assert!(list.remove_card(column_id, card_id).is_some());
+        assert!(list.get_card_by_id(column_id, card_id).is_none());
+    }
+
+    #[test]
+    fn card_operations_preserve_card_errors() {
+        let mut list = List::new(1, String::from("List"));
+        let column_id = list.add_column("Column").unwrap();
+
+        assert_eq!(list.add_card(column_id, "   "), Err(CardError::EmptyName));
+        assert_eq!(
+            list.rename_card(column_id, 0, "Name"),
+            Err(CardError::CardNotFound)
+        );
+        assert_eq!(
+            list.change_card_description(column_id, 0, "Description"),
+            Err(CardError::CardNotFound)
+        );
+        assert_eq!(
+            list.move_card_in_column(column_id, 0, 0),
+            Err(CardError::CardNotFound)
+        );
+    }
+
+    #[test]
+    fn move_card_to_column_within_column_returns_invalid_place() {
+        let mut list = List::new(1, String::from("List"));
+        let column_id = list.add_column("Column").unwrap();
+        let card_id = list.add_card(column_id, "Card").unwrap();
+
+        assert_eq!(
+            list.move_card_to_column(column_id, card_id, column_id, 1),
+            Err(CardMoveError::InvalidCardPlace)
+        );
     }
 }
