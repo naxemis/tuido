@@ -1,23 +1,32 @@
-# template-repository
-Description placeholder
+# Tuido
+Simple terminal to-do app built with Ratatui. Organize tasks into lists with custom columns, sort them by card properties, save locally as JSON and synchronize with git using commands.
 
 ## Project Status
-Project status placeholder
+Project is under development. Old repository was lost, rebuilding `core/` with old code.
 
 ## Features
-### Minimal Viable Product
-- [ ] Feature placeholder
-### Full Release
-- [ ] Feature placeholder
+### Minimal Viable Product:
+- [ ] Creating, deleting, and renaming lists
+- [ ] Creating, removing, and renaming columns (e.g. backlog, in progress, etc.)
+- [ ] Creating, deleting, and renaming cards in lists
+- [ ] Moving cards between columns
+- [ ] Saving lists in separate JSON files after every change
+- [ ] TUI using Ratatui
+### Full Release:
+- [ ] Importing and exporting lists to and from the user's desktop
+- [ ] Adding, deleting, and renaming card properties (e.g. deadline date, priority, etc.)
+- [ ] Sorting cards by their properties
+- [ ] Manual Git synchronization (commit, push, and pull)
 
 ## Requirements
-- Requirement placeholder
+- Rust 1.85 or newer
+- Cargo 1.99 or newer
 
 ## Building
 Clone the repository:
 ```bash
-git clone https://github.com/naxemis/placeholder_repository.git
-cd placeholder_repository
+git clone https://github.com/naxemis/tuido.git
+cd tuido
 ```
 
 Build the workspace:
@@ -28,7 +37,7 @@ cargo build
 ## Running
 Run the application with:
 ```bash
-cargo run -p placeholer_application
+cargo run -p tui
 ```
 
 ## Testing
